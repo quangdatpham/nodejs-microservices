@@ -9,7 +9,7 @@ module.exports = Object.create({
                 reject(new Error('connection is required'))
             }
 
-            Promise.all(userRepository)
+            Promise.all([ userRepository.initialize(connection) ])
                 .then(repos => {
                     resolve({
                         repos,

@@ -1,9 +1,14 @@
 const express = require('express');
+const helmet = require('helmet');
 
-const app = express();
+const start = options => {
+    return new Promise((resolve, reject) => {
+        const app = express();
 
-const PORT = process.env.PORT || 3000;
+        app.use(helmet());
 
-app.listen(PORT, () => {
-    console.log(`Server is now running on ${PORT}`);
-})
+        const server = app.listen(options.port, () => resolve(server));
+    })
+}
+
+module.exports = Object.create({ start })
