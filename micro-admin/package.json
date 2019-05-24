@@ -13,7 +13,7 @@
     "start": "node src/index.js",
     "dev": "nodemon --inspect index.js",
     "dev:chrome-debug": "nodemon --inspect-brk index.js",
-    "test": "mocha **/**--test.js",
+    "test": "mocha ./test/*test.js",
     "init:lint": "./node_modules/.bin/eslint --init",
     "inspect:lint": "eslint .",
     "inspect:vulnerabilities": "npm audit",
@@ -34,6 +34,7 @@
     "mongodb": "^3.2.6"
   },
   "devDependencies": {
+    "console.table": "^0.10.0",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
     "should": "^13.2.3",
