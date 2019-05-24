@@ -1,7 +1,5 @@
 const userRepository = require('./user.repository');
 
-const disconnect = connection => () => connection.close();
-
 module.exports = Object.create({
     initialize: connection => {
         return new Promise((resolve, reject) => {
@@ -17,10 +15,7 @@ module.exports = Object.create({
                         return obj;
                     }, {});
                     
-                    resolve({
-                        repositories,
-                        disconnect: disconnect(connection)
-                    });
+                    resolve(repositories);
                 })
                 .catch(err => {
                     reject(new Error(`Error while initialize repository err: ${err}`));

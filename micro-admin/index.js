@@ -22,8 +22,8 @@ mediator.on('db.ready', db => {
         })
         .then(app => {
             console.log(`Server is now running on port ${config.serverSettings.port}`);
-            app.on('close', () => {
-                rep.disconnect();
+            app.on('app.close', () => {
+                mediator.emit('db.close');
             });
         });
 });

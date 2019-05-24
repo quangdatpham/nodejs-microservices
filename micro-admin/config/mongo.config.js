@@ -17,6 +17,7 @@ const connect =
                         
                         const db = client.db(options.dbName);
                         mediator.emit('db.ready', db);
+                        mediator.on('db.close', () => client.close());
                     }
                 )
             })
