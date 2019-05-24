@@ -11,13 +11,19 @@ module.exports = Object.create({
 
             Promise.all([ userRepository.initialize(connection) ])
                 .then(repos => {
+                    const repositories = repos.reduce((obj, repo) => {
+                        const [k, v]  = Object.entries(repo)[0];
+                        obj[k] = v;
+                        return obj;
+                    }, {});
+                    
                     resolve({
-                        repos,
+                        repositories,
                         disconnect: disconnect(connection)
                     });
                 })
                 .catch(err => {
-                    throw new Error(`Error while initialize repository err: ${err}`);
+                    reject(new Error(`Error while initialize repository err: ${err}`));
                 })
         })
     },

@@ -23,7 +23,7 @@ mediator.on('db.ready', db => {
         .then(app => {
             console.log(`Server is now running on port ${config.serverSettings.port}`);
             app.on('close', () => {
-                repo.disconnect();
+                rep.disconnect();
             });
         });
 });

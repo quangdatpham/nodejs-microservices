@@ -24,8 +24,10 @@ const repository = (db) => {
   }
 
   return {
-      getAllUsers,
-      getUserById
+      User: {
+          getAllUsers,
+          getUserById
+      }
   }
 }
 
