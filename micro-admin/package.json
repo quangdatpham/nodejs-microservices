@@ -1,0 +1,42 @@
+{
+  "name": "micro-admin",
+  "version": "1.0.0",
+  "description": "Microservices module admin",
+  "main": "index.js",
+  "author": "Quang Dat Pham <quangdat2000.pham@gmail.com>",
+  "repository": "quangdatpham/nodejs-microservices",
+  "license": "ISC",
+  "engines": {
+    "node": ">= 10.15.3"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon --inspect index.js",
+    "dev:chrome-debug": "nodemon --inspect-brk index.js",
+    "test": "mocha **/**--test.js",
+    "init:lint": "./node_modules/.bin/eslint --init",
+    "inspect:lint": "eslint .",
+    "inspect:vulnerabilities": "npm audit",
+    "inspect:license": "license-checker --failOn GPLv2",
+    "inspect:complexity": "plato ."
+  },
+  "keywords": [
+    "admin",
+    "microservices",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "dependencies": {
+    "express": "^4.17.0",
+    "helmet": "^3.18.0",
+    "http-status": "^1.3.2",
+    "mongodb": "^3.2.6"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "should": "^13.2.3",
+    "supertest": "^4.0.2"
+  }
+}
