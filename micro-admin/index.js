@@ -1,4 +1,4 @@
-/*eslint no-console: ["error", { allow: ["log"] }] */
+/*eslint no-console: ["off"] */
 'use strict';
 
 const server = require('./server/');

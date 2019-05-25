@@ -34,6 +34,9 @@ const repository = (db) => {
 module.exports = Object.create({
     initialize: connection => {
         return new Promise((resolve, reject) => {
+            if (!connection) 
+                reject(new Error('connection is require'));
+
             resolve(repository(connection))
         })
     }

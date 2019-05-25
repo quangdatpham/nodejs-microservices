@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/*eslint no-console: ["error", { allow: ["warn", "error", "table"] }] */
 require('console.table');
 const { EventEmitter } = require('events');
 const assert = require('assert');
