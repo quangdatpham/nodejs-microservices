@@ -5,6 +5,12 @@ const addRootRoute = require('../app/route/');
 
 const start = options => {
     return new Promise((resolve, reject) => {
+        if (!options.port)
+            reject(new Error('port is require'));
+
+        if (!options.repo)
+            reject(new Error('repository is require'));
+
         const app = express();
 
         app.use(helmet());

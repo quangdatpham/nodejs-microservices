@@ -9,12 +9,8 @@ const { EventEmitter } = require('events');
 const mediator = new EventEmitter();
 
 mediator.on('db.ready', db => {
-    let rep;
-
     repository.initialize(db)
         .then(repo => {
-            rep = repo
-
             return server.start({
                 port: config.serverSettings.port,
                 repo

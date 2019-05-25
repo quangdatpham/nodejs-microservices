@@ -1,7 +1,7 @@
 const status = require('http-status');
 
 module.exports = repo => {
-    const { User } = repo.repositories;
+    const { User } = repo;
 
     const getAllUsers = async (req, res) => {
         const users = await User.getAllUsers();

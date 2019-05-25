@@ -4,8 +4,6 @@ const should = require('should');
 const repository = require('../app/repository/');
 
 describe('Initialize repository', function () {
-    this.timeout(5000);
-
     it('should be a promise', done => {
         const mediator = new EventEmitter();
 
