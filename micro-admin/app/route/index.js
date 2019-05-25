@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const addUserRoute = require('./user.route');
+const addUserRoute = require('./account.route');
 
 module.exports = (app, repo) => {
     addUserRoute(router, repo);

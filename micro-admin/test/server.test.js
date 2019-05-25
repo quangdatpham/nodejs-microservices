@@ -18,6 +18,7 @@ describe('Start server', () => {
                 })
                 .then(app => {
                     app.should.be.an.instanceof(http.Server);
+                    app.close();
                     done();
                 });
         })

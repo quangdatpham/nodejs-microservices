@@ -1,4 +1,4 @@
-const userRepository = require('./user.repository');
+const userRepository = require('./account.repository');
 
 module.exports = Object.create({
     initialize: connection => {
