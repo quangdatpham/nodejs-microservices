@@ -1,4 +1,38 @@
 #%RAML 1.0
-title: admin
+title: Module micro-admin
 version: v1
 baseUri: /admin
+
+types:
+    User:
+        properties:
+            id: number
+            username: string
+            email: string
+        example:
+            id: 123456
+            username: quangdatpham
+            email: quangdat2000.pham
+
+resourceTypes:
+    Collection:
+        get:
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: <<item>> []
+
+    Member:
+        get:
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: <<item>>
+                            
+/users:
+    type:  { Collection: { item : User } }
+
+    /{id}:
+        type:  { Member: { item : User } }
