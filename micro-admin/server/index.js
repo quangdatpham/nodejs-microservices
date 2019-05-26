@@ -1,3 +1,4 @@
+const spdy = require('spdy');
 const express = require('express');
 const helmet = require('helmet');
 
@@ -16,7 +17,12 @@ const start = options => {
         app.use(helmet());
         addRootRoute(app, options.repo);
 
-        const server = app.listen(options.port, () => resolve(server));
+        // if (process.env.NODE === 'test') {
+            const server = app.listen(options.port, () => resolve(server))
+        // } else {
+        //     const server = spdy.createServer(options.ssl, app)
+        //         .listen(options.port, () => resolve(server));
+        // }
     })
 }
 
