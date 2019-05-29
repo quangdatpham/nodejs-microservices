@@ -29,7 +29,19 @@ const start = container => {
 
         addRootRoute(app, repos);
 
-        // app.use();
+        app.use((err, req, res, next) => {
+            reject(new Error('Something went wrong! :{}' + err));
+            res.status(500).send({
+                url: req.url,
+                message: err.message,
+                stack: err.stack
+            });
+        })
+
+        app.use((req, res, next) => {
+            logger.warn(`WARN url not found :[] ${req.url}`);
+            next();
+        });
 
         // if (process.env.NODE === 'test') {
             const server = app.listen(port, () => resolve(server))

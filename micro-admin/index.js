@@ -26,6 +26,10 @@ mediator.on('di.ready', container => {
             app.on('app.close', () => {
                 mediator.emit('db.close');
             });
+        })
+        .catch(err => {
+            logger.error(err.message);
+            logger.error(err.stack);
         });
 });
 
