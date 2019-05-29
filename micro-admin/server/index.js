@@ -1,8 +1,12 @@
 const spdy = require('spdy');
 const express = require('express');
 const helmet = require('helmet');
+const morgan = require('morgan');
+const logger = require('../config/logger/');
 
 const addRootRoute = require('../app/route/');
+
+let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
 const start = options => {
     return new Promise((resolve, reject) => {
@@ -14,7 +18,12 @@ const start = options => {
 
         const app = express();
 
+        if (process.env.NODE_ENV === 'production')
+            morganFormat = 'combined';
+
         app.use(helmet());
+        app.use(morgan(morganFormat, { stream: logger.stream}));
+
         addRootRoute(app, options.repo);
 
         // if (process.env.NODE === 'test') {

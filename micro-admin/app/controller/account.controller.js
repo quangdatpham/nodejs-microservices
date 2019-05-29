@@ -1,8 +1,8 @@
 const status = require('http-status');
-
+const logger = require('../../config/logger/');
 module.exports = repo => {
     const { Account } = repo;
-
+    
     const getAllAccounts = async (req, res) => {
         const accounts = await Account.getAllAccounts();
         

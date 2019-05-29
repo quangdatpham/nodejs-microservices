@@ -4,6 +4,7 @@
 const server = require('./server/');
 const config = require('./config/');
 const repository = require('./app/repository/');
+const logger = require('./config/logger/');
 const { EventEmitter } = require('events');
 
 const mediator = new EventEmitter();
@@ -18,7 +19,7 @@ mediator.on('db.ready', db => {
             });
         })
         .then(app => {
-            console.log(`Server is now running on port ${config.serverSettings.port}`);
+            logger.info(`SERVER IS NOW LISTENING ON PORT ${config.serverSettings.port}`);
             app.on('app.close', () => {
                 mediator.emit('db.close');
             });
@@ -28,7 +29,7 @@ mediator.on('db.ready', db => {
 config.db.connect(mediator);
 
 mediator.on('db.error', (err) => {
-    console.error(err)
+    logger.error('DB error :{}', err);
 })
   
 mediator.emit('boot.ready')
