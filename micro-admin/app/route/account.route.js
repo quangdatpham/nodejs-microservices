@@ -4,8 +4,8 @@ const express = require('express');
 const router = express.Router();
 
 
-module.exports = (app, repo) => {
-    const controller = require('../controller/account.controller')(repo);
+module.exports = (app, repos) => {
+    const controller = require('../controller/account.controller')(repos);
 
     router.get('/', controller.getAllAccounts);
     router.get('/:id', controller.getAccountById);

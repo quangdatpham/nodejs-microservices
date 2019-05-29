@@ -1,7 +1,9 @@
 const userRepository = require('./account.repository');
 
 module.exports = Object.create({
-    initialize: connection => {
+    initialize: container => {
+        const { db: connection } = container.cradle;
+
         return new Promise((resolve, reject) => {
             if (!connection) {
                 reject(new Error('connection is required'))

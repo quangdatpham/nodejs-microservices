@@ -8,12 +8,15 @@ const addRootRoute = require('../app/route/');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
-const start = options => {
+const start = container => {
+    const { port } = container.resolve('serverSettings');
+    const repos = container.resolve('repos');
+    
     return new Promise((resolve, reject) => {
-        if (!options.port)
+        if (!port)
             reject(new Error('port is require'));
 
-        if (!options.repo)
+        if (!repos)
             reject(new Error('repository is require'));
 
         const app = express();
@@ -24,10 +27,12 @@ const start = options => {
         app.use(helmet());
         app.use(morgan(morganFormat, { stream: logger.stream}));
 
-        addRootRoute(app, options.repo);
+        addRootRoute(app, repos);
+
+        // app.use();
 
         // if (process.env.NODE === 'test') {
-            const server = app.listen(options.port, () => resolve(server))
+            const server = app.listen(port, () => resolve(server))
         // } else {
         //     const server = spdy.createServer(options.ssl, app)
         //         .listen(options.port, () => resolve(server));
