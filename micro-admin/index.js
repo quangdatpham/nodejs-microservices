@@ -1,7 +1,6 @@
-/*eslint no-console: ["off"] */
 'use strict';
 
-const server = require('./server/');
+const server = require('./app/server');
 const { di } = require('./config/');
 const repository = require('./app/repository/');
 const { EventEmitter } = require('events');

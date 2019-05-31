@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const { EventEmitter } = require('events');
-const server = require('../server/');
+const server = require('../app/server');
 const serverSettings = require('../config/server.config');
 const http = require('http');
 const repository = require('../app/repository/');

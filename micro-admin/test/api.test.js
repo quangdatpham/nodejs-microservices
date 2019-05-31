@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-const server = require('../server/');
+const server = require('../app/server');
 const request = require('supertest');
 const { createContainer, asValue } = require('awilix');
 

@@ -2,9 +2,9 @@ const spdy = require('spdy');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const logger = require('../config/logger/');
+const logger = require('../config/logger');
 
-const addRootRoute = require('../app/route/');
+const addRootRoute = require('./route');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
