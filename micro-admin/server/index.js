@@ -9,10 +9,10 @@ const addRootRoute = require('../app/route/');
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
 const start = container => {
-    const { port } = container.resolve('serverSettings');
-    const repos = container.resolve('repos');
-    
     return new Promise((resolve, reject) => {
+        const { port } = container.resolve('serverSettings');
+        const repos = container.resolve('repos');
+
         if (!port)
             reject(new Error('port is require'));
 

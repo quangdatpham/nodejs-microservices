@@ -1,6 +1,9 @@
 /* eslint-env mocha */
 const server = require('../server/');
 const request = require('supertest');
+const { createContainer, asValue } = require('awilix');
+
+const container = createContainer();
 
 const accountData = [
     {
@@ -15,23 +18,25 @@ const accountData = [
     }
 ]
 
+const repos = {
+    Account: {
+        getAllAccounts: () => accountData,
+        getAccountById: id => accountData.find(u => u.id === id)
+    }
+}
+
+container.register({
+    serverSettings: asValue({ port: 3000 }),
+    repos: asValue(repos)
+});
+
 describe('Test API', () => {
     let app;
-    const repo = {
-        Account: {
-            getAllAccounts: () => accountData,
-            getAccountById: id => accountData.find(u => u.id === id)
-        }
-    }
-
     beforeEach(() => {
-        return server.start({
-            port: 3000,
-            repo
-        })
-        .then(serv => {
-           app = serv;
-        });
+        return server.start(container)
+            .then(serv => {
+                app = serv;
+            });
     });
 
     afterEach(() => {

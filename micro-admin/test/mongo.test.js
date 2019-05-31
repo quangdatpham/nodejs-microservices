@@ -14,7 +14,6 @@ describe('Connect to MongoDB', () => {
             db.admin().listDatabases((err, dbs) => {
                 assert.equal(null, err);
                 assert.ok(dbs.databases.length > 0);
-                console.table(dbs.databases);
                 mediator.emit('db.close');
                 done();
             })
