@@ -3,6 +3,7 @@ const { createContainer, asValue } = require('awilix');
 const initDI = ({ logger, serverSettings, database }) => mediator => {
     mediator.once('app.init', () => {
         mediator.on('db.ready', (db) => {
+            logger.info('Connected to MongoDB @@@@');
             const container = createContainer();
 
             container.register({

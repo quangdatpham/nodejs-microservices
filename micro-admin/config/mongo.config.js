@@ -2,18 +2,21 @@
 
 const { MongoClient } = require('mongodb');
 
-const MONGO_URL = 'mongodb://localhost:27017';
+const getMongoURL = (options) =>
+    options.servers
+        .reduce((prev, cur) => prev + cur + ',', 'mongodb://')
+        .slice(0, - 1);
 
 const connect = 
     options => 
         mediator => {
             mediator.once('boot.ready', () => {
                 MongoClient.connect(
-                    MONGO_URL,
-                    { useNewUrlParser: true },
+                    getMongoURL(options),
+                    { useNewUrlParser: true }, 
                     (err, client) => {
                         if (err) 
-                            mediator.emit('db.error', err);
+                            return mediator.emit('db.error', err);
                         
                         const db = client.db(options.dbName);
                         mediator.emit('db.ready', db);

@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const server = require('./app/server');
 const { di } = require('./config/');
 const repository = require('./app/repository/');
@@ -11,6 +13,8 @@ const mediator = new EventEmitter();
 mediator.on('di.ready', container => {
     const { logger } = container.cradle;
     
+    logger.info('DI is ready!');
+
     repository.initialize(container)
         .then(repos => {
             logger.info('Initialized repository!');
@@ -29,6 +33,10 @@ mediator.on('di.ready', container => {
         .catch(err => {
             logger.error(err.message);
             logger.error(err.stack);
+        });
+
+        mediator.on('di.error', err => {
+            logger.error('DI ERROR :{}' + err.stack);
         });
 });
 
