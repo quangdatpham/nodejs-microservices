@@ -10,7 +10,7 @@ let morganFormat = ':method :url :status :res[content-length] - :response-time m
 
 const start = container => {
     return new Promise((resolve, reject) => {
-        const { port } = container.resolve('serverSettings');
+        const { port, ssl } = container.resolve('serverSettings');
         const repos = container.resolve('repos');
 
         if (!port)
@@ -43,12 +43,12 @@ const start = container => {
             next();
         });
 
-        // if (process.env.NODE === 'test') {
+        if (process.env.NODE === 'test') {
             const server = app.listen(port, () => resolve(server))
-        // } else {
-        //     const server = spdy.createServer(options.ssl, app)
-        //         .listen(options.port, () => resolve(server));
-        // }
+        } else {
+            const server = spdy.createServer(ssl, app)
+                .listen(port, () => resolve(server));
+        }
     })
 }
 

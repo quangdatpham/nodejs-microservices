@@ -7,19 +7,19 @@ RUN useradd --user-group --create-home --shell /bin/false nodd && \
 
 ENV ROOT=/home/nodd/source
 
-COPY package.json $ROOT/
-
-COPY index.js $ROOT/
-
 COPY app/ $ROOT/app
 
 COPY config/ $ROOT/config
 
-COPY server/ $ROOT/server
+COPY libs/ $ROOT/libs
+
+RUN mkdir $ROOT/logs
 
 COPY vendor/ $ROOT/vendor
 
-COPY libs/ $ROOT/libs
+COPY index.js $ROOT/
+
+COPY package.json $ROOT/
 
 RUN chown -R nodd:nodd $ROOT/* /usr/local/
 
