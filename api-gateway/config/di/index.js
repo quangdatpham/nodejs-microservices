@@ -1,0 +1,1 @@
+module.exports = Object.create({ initialize: require('./di.config').initDI });
