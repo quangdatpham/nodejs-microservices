@@ -35,7 +35,7 @@ const discoverRoutes = (container) => {
         },
         set (target, key, value) {
           logger.info(`Setting properties {${key}}`);
-          logger.info(JSON.stringify(value))
+          logger.info(JSON.stringify(value));
           return Reflect.set(target, key, value);
         }
       });

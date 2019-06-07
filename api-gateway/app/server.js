@@ -5,6 +5,7 @@ const proxy = require('http-proxy-middleware');
 const spdy = require('spdy');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const cors = require('cors');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
@@ -27,6 +28,7 @@ const start = (container) => {
     if (process.env.NODE_ENV === 'production')
         morganFormat = 'combined';
 
+    app.use(cors());
     app.use(helmet());
     app.use(morgan(morganFormat, { stream: logger.stream}));
 
@@ -36,6 +38,7 @@ const start = (container) => {
 
       app.use(route, proxy({
         target,
+        secure: false,
         changeOrigin: true,
         logProvider: () => logger
       }))
