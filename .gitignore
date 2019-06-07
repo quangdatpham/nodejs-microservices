@@ -21,3 +21,6 @@
 
 # others
 /**/temp
+
+# Api-gateway-service
+/api-gateway/certs/*.pem
