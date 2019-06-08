@@ -21,10 +21,14 @@ COPY package.json $ROOT/
 
 COPY certs/ $ROOT/certs
 
-RUN chown -R nodd:nodd $ROOT/* /usr/local/
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+RUN chown -R nodd:nodd $HOME/* /usr/local/ && \
+    chmod +x /usr/local/bin/dumb-init
 
 WORKDIR $ROOT
-RUN npm install --silent --progress=false --production
+RUN npm cache clean && \
+    npm install --silent --progress=false --production
 
 RUN chown -R nodd:nodd $ROOT/*
 USER nodd
