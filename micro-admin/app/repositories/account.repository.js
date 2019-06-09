@@ -1,6 +1,6 @@
 'use strict'
 
-const repository = (db) => {
+module.exports = (db) => {
   const collection = db.collection('accounts');
 
   const getAllAccounts = () => {
@@ -24,20 +24,7 @@ const repository = (db) => {
   }
 
   return {
-      Account: {
-          getAllAccounts,
-          getAccountById
-      }
+    getAllAccounts,
+    getAccountById
   }
 }
-
-module.exports = Object.create({
-    initialize: connection => {
-        return new Promise((resolve, reject) => {
-            if (!connection) 
-                reject(new Error('connection is require'));
-
-            resolve(repository(connection))
-        })
-    }
-})
