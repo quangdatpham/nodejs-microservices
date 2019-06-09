@@ -7,7 +7,10 @@ module.exports = container => {
         const accounts = await Account.getAllAccounts();
         
         res.status(status.OK)
-            .send(accounts);
+            .render('templates/accounts/index', {
+                title: 'List accounts',
+                accounts
+            });
     }
 
     const getAccountById = async (req, res) => {
@@ -15,7 +18,10 @@ module.exports = container => {
         const account = await Account.getAccountById(id);
         
         res.status(status.OK)
-            .send(account);
+            .render('templates/accounts/show', {
+                title: 'Account Details',
+                account
+            });
     }
 
     return Object.create({
