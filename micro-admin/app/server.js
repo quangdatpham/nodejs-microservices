@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const logger = require('../config/logger');
 
-const addRootRoute = require('./route');
+const addRootRoute = require('./routes');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 

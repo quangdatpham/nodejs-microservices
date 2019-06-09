@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const server = require('./app/server');
 const { di } = require('./config/');
-const repository = require('./app/repository/');
+const repository = require('./app/repositories/');
 const { EventEmitter } = require('events');
 const { asValue } = require('awilix');
 
