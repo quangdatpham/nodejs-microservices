@@ -14,6 +14,7 @@ const start = container => {
     return new Promise((resolve, reject) => {
         const { port, ssl } = container.resolve('serverSettings');
         const repos = container.resolve('repos');
+        const helpers = container.resolve('helpers');
 
         if (!port)
             reject(new Error('port is require'));
@@ -24,7 +25,7 @@ const start = container => {
         const app = express();
         const hbs = exphbs.create({
             extname: 'hbs',
-            helpers: {},
+            helpers: helpers,
             layoutsDir: path.join(`${__dirname}/views/layouts`),
             partialsDir: path.join(`${__dirname}/views/partials`)
         });

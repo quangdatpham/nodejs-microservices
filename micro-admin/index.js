@@ -7,6 +7,7 @@ const { di } = require('./config/');
 const repository = require('./app/repositories/');
 const { EventEmitter } = require('events');
 const { asValue } = require('awilix');
+const helpers = require('./app/helpers/');
 
 const mediator = new EventEmitter();
 
@@ -20,6 +21,13 @@ mediator.on('di.ready', container => {
             logger.info('Initialized repository!');
             container.register({
                 repos: asValue(repos)
+            });
+
+            return helpers.initialize(container);
+        })
+        .then(helpers => {
+            container.register({
+                helpers: asValue(helpers)
             });
 
             return server.start(container);
