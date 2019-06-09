@@ -1,10 +1,12 @@
 const status = require('http-status');
-const logger = require('../../config/logger/');
+const { to } = require('await-to-js');
+
 module.exports = container => {
     const { Account } = container.resolve('repos');
     
-    const getAllAccounts = async (req, res) => {
-        const accounts = await Account.getAllAccounts();
+    const getAllAccounts = async (req, res, next) => {
+        const [ err, accounts ] = await to(Account.getAllAccounts());
+        if (err) return next(err);
         
         res.status(status.OK)
             .render('templates/accounts/index', {
@@ -13,9 +15,10 @@ module.exports = container => {
             });
     }
 
-    const getAccountById = async (req, res) => {
+    const getAccountById = async (req, res, next) => {
         const { id } = req.params;
-        const account = await Account.getAccountById(id);
+        const [ err, account ] = await to(Account.getAccountById(id));
+        if (err) return next(err);
         
         res.status(status.OK)
             .render('templates/accounts/show', {
@@ -24,19 +27,21 @@ module.exports = container => {
             });
     }
 
-    const newAccount = async (req, res) => {
+    const newAccount = async (req, res, next) => {
         res.render('templates/accounts/new', {
             title: 'New account'
         });
     }
 
-    const createAccount = async (req, res) => {
+    const createAccount = async (req, res, next) => {
         const { username, password } = req.body;
 
-        await Account.createAccount({
+        const [ err ] = await to(Account.createAccount({
             username, password
-        });
+        }));
 
+        if (err) return next(err);
+        
         res.redirect('/admin/accounts/');
     }
 
