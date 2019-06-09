@@ -3,10 +3,11 @@
 const express = require('express');
 const router = express.Router();
 
-const addUserRoute = require('./account.route');
+const accountRoute = require('./account.route');
 
-module.exports = (app, repo) => {
-    addUserRoute(router, repo);
+module.exports = container => {
 
-    app.use('/admin', router);
+	router.use('/accounts', accountRoute(container));
+
+    return router;
 }

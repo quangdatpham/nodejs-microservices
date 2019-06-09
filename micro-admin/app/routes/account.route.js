@@ -4,11 +4,12 @@ const express = require('express');
 const router = express.Router();
 
 
-module.exports = (app, repos) => {
-    const controller = require('../controllers/account.controller')(repos);
+module.exports = container => {
+    const controller = require('../controllers/account.controller')(container);
 
     router.get('/', controller.getAllAccounts);
+
     router.get('/:id', controller.getAccountById);
 
-    app.use('/accounts', router);
+    return router;
 }

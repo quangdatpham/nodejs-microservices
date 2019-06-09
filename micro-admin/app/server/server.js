@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const path = require('path');
 
-const addRootRoute = require('../routes');
+const rootRoute = require('../routes');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
@@ -40,7 +40,7 @@ const start = container => {
         app.use(helmet());
         app.use(morgan(morganFormat, { stream: logger.stream}));
 
-        addRootRoute(app, repos);
+        app.use('/admin', rootRoute(container));
 
         app.use((err, req, res, next) => {
             reject(new Error('Something went wrong! :{}' + err));
