@@ -10,10 +10,10 @@
     "node": ">= 10.15.3"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "NODE_ENV=production node index.js",
     "dev": "nodemon --inspect index.js",
     "dev:chrome-debug": "nodemon --inspect-brk index.js",
-    "test": "NODE=test;DB_SERVERS=localhost:27017 mocha ./test/*test.js",
+    "test": "NODE_ENV=test;DB_SERVERS=localhost:27017 mocha ./test/*test.js",
     "raml": "raml2html services.raml > temp/api.html",
     "init:lint": "./node_modules/.bin/eslint --init",
     "inspect:lint": "eslint .",

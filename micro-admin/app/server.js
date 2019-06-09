@@ -3,6 +3,8 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const logger = require('../config/logger');
+const exphbs = require('express-handlebars');
+const path = require('path');
 
 const addRootRoute = require('./routes');
 
@@ -20,9 +22,19 @@ const start = container => {
             reject(new Error('repository is require'));
 
         const app = express();
+        const hbs = exphbs.create({
+            extname: 'hbs',
+            helpers: {},
+            layoutsDir: path.join(`${__dirname}/views/layouts`),
+            partialsDir: path.join(`${__dirname}/views/partials`)
+        });
 
         if (process.env.NODE_ENV === 'production')
             morganFormat = 'combined';
+
+        app.engine('.hbs', hbs.engine);
+        app.set('view engine', '.hbs');
+        app.set('views', path.join(`${__dirname}/views`));
 
         app.use(helmet());
         app.use(morgan(morganFormat, { stream: logger.stream}));
@@ -41,6 +53,12 @@ const start = container => {
         app.use((req, res, next) => {
             logger.warn(`WARN url not found :[] ${req.url}`);
             next();
+        });
+
+        app.get('/', (req, res) => {
+            res.render('index', {
+                title: 'Admin page'
+            });
         });
 
         if (process.env.NODE === 'test') {
