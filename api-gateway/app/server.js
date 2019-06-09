@@ -14,6 +14,7 @@ const start = (container) => {
     const { port, ssl } = container.resolve('serverSettings');
     const routes = container.resolve('routes');
     const logger = container.resolve('logger');
+    const { requestMiddleware } = container.resolve('middlewares');
 
     if (!routes)
         reject(new Error('routes is require'));
@@ -32,6 +33,8 @@ const start = (container) => {
     app.use(helmet());
     app.use(morgan(morganFormat, { stream: logger.stream}));
 
+    app.use(requestMiddleware.wirePreRequest);
+
     for (let id of Reflect.ownKeys(routes)) {
       const {route, target} = routes[id];
       logger.info(`Mapping route {} ${route} to ${target}`);
@@ -43,6 +46,10 @@ const start = (container) => {
         logProvider: () => logger
       }))
     }
+
+    app.use(requestMiddleware.wirePostRequest);
+
+    app.use(requestMiddleware.wireNotFoundMiddleware);
 
     if (process.env.NODE === 'test') {
       const server = app.listen(port, () => resolve(server));

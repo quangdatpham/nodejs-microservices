@@ -6,18 +6,24 @@ const server = require('./app/server');
 const { di } = require('./config/');
 const { EventEmitter } = require('events');
 const { asValue } = require('awilix');
+const middlewares = require('./app/middlewares/');
 
 const mediator = new EventEmitter();
 
 mediator.on('di.ready', container => {
     const { logger } = container.cradle;
     const docker = container.resolve('docker');
+
     
     logger.info('DI is ready!');
 
     docker.discoverRoutes(container)
         .then(routes => {
             container.register({ routes: asValue(routes) });
+            return middlewares.initialize(container);
+        })
+        .then(middlewares => {
+            container.register({ middlewares: asValue(middlewares) });
             return server.start(container);
         })
         .then(app => {
