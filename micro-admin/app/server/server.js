@@ -2,11 +2,10 @@ const spdy = require('spdy');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const logger = require('../config/logger');
 const exphbs = require('express-handlebars');
 const path = require('path');
 
-const addRootRoute = require('./routes');
+const addRootRoute = require('../routes');
 
 let morganFormat = ':method :url :status :res[content-length] - :response-time ms';
 
@@ -15,6 +14,7 @@ const start = container => {
         const { port, ssl } = container.resolve('serverSettings');
         const repos = container.resolve('repos');
         const helpers = container.resolve('helpers');
+        const logger = container.resolve('logger');
 
         if (!port)
             reject(new Error('port is require'));

@@ -2,34 +2,28 @@
 
 require('dotenv').config();
 
-const server = require('./app/server');
-const { di } = require('./config/');
-const repository = require('./app/repositories/');
+const server = require('./server/server');
+const { di } = require('../config/');
 const { EventEmitter } = require('events');
 const { asValue } = require('awilix');
-const helpers = require('./app/helpers/');
+const middlewares = require('./middlewares/');
 
 const mediator = new EventEmitter();
 
 mediator.on('di.ready', container => {
     const { logger } = container.cradle;
+    const docker = container.resolve('docker');
+
     
     logger.info('DI is ready!');
 
-    repository.initialize(container)
-        .then(repos => {
-            logger.info('Initialized repository!');
-            container.register({
-                repos: asValue(repos)
-            });
-
-            return helpers.initialize(container);
+    docker.discoverRoutes(container)
+        .then(routes => {
+            container.register({ routes: asValue(routes) });
+            return middlewares.initialize(container);
         })
-        .then(helpers => {
-            container.register({
-                helpers: asValue(helpers)
-            });
-
+        .then(middlewares => {
+            container.register({ middlewares: asValue(middlewares) });
             return server.start(container);
         })
         .then(app => {
@@ -41,10 +35,6 @@ mediator.on('di.ready', container => {
         .catch(err => {
             logger.error(err.message);
             logger.error(err.stack);
-        });
-
-        mediator.on('di.error', err => {
-            logger.error('DI ERROR :{}' + err.stack);
         });
 });
 
