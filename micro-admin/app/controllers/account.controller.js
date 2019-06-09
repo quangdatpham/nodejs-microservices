@@ -24,8 +24,26 @@ module.exports = container => {
             });
     }
 
+    const newAccount = async (req, res) => {
+        res.render('templates/accounts/new', {
+            title: 'New account'
+        });
+    }
+
+    const createAccount = async (req, res) => {
+        const { username, password } = req.body;
+
+        const account = Account.createAccount({
+            username, password
+        });
+
+        res.redirect('/admin/accounts/');
+    }
+
     return Object.create({
         getAllAccounts,
-        getAccountById
+        getAccountById,
+        newAccount,
+        createAccount
     });
 }

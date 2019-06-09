@@ -9,6 +9,10 @@ module.exports = container => {
 
     router.get('/', controller.getAllAccounts);
 
+    router.get('/new', controller.newAccount);
+
+    router.post('/', controller.createAccount);
+
     router.get('/:id', controller.getAccountById);
 
     return router;
