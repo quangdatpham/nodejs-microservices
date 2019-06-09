@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const appRoot = require('app-root-path');
+const bodyParser = require('body-parser');
 
 const rootRoute = require('../routes');
 
@@ -36,6 +37,9 @@ const start = container => {
         app.engine('.hbs', hbs.engine);
         app.set('view engine', '.hbs');
         app.set('views', `${appRoot}/app/views`);
+
+        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.json());
 
         app.use(helmet());
         app.use(morgan(morganFormat, { stream: logger.stream}));

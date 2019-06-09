@@ -33,7 +33,7 @@ module.exports = container => {
     const createAccount = async (req, res) => {
         const { username, password } = req.body;
 
-        const account = Account.createAccount({
+        await Account.createAccount({
             username, password
         });
 
