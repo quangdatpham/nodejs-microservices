@@ -13,8 +13,8 @@ module.exports = container => {
     const wirePostRequest = (err, req, res, next) => {
         if (!err) return next();
 
-        logger.info(`ERROR :{} ${status.BAD_GATEWAY} ${err.message}`);
-        logger.info(err.stack);
+        logger.error(`ERROR :{} ${status.BAD_GATEWAY} ${err.message}`);
+        logger.error(err.stack);
 
         res.status(status.BAD_GATEWAY).send({
             success: false,
@@ -28,7 +28,7 @@ module.exports = container => {
     }
 
     const wireNotFoundMiddleware = (req, res, next) => {
-        logger.info(`ERROR :{} ${status.NOT_FOUND}`);
+        logger.warn(`ERROR :{} ${status.NOT_FOUND}`);
         
         res.status(status.NOT_FOUND).send({
             success: false,
