@@ -2,12 +2,14 @@
 
 require('dotenv').config();
 
+const { EventEmitter } = require('events');
+const { asValue } = require('awilix');
+
 const server = require('./server/server');
 const { di } = require('../config/');
 const repository = require('./repositories/');
-const { EventEmitter } = require('events');
-const { asValue } = require('awilix');
 const helpers = require('./helpers/');
+const middlewares = require('./middlewares/');
 
 const mediator = new EventEmitter();
 
@@ -16,18 +18,16 @@ mediator.on('di.ready', container => {
     
     logger.info('DI is ready!');
 
-    repository.initialize(container)
-        .then(repos => {
-            logger.info('Initialized repository!');
+    Promise.all([
+        repository.initialize(container),
+        helpers.initialize(container),
+        middlewares.initialize(container)
+    ])
+        .then(([ repos, helpers, middlewares ]) => {
             container.register({
-                repos: asValue(repos)
-            });
-
-            return helpers.initialize(container);
-        })
-        .then(helpers => {
-            container.register({
-                helpers: asValue(helpers)
+                repos: asValue(repos),
+                helpers: asValue(helpers),
+                middlewares: asValue(middlewares)
             });
 
             return server.start(container);

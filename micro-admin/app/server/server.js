@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const appRoot = require('app-root-path');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const rootRoute = require('../routes');
 
@@ -16,7 +17,8 @@ const start = container => {
         const repos = container.resolve('repos');
         const helpers = container.resolve('helpers');
         const logger = container.resolve('logger');
-
+        const { requestMiddleware } = container.resolve('middlewares');
+        
         if (!port)
             reject(new Error('port is require'));
 
@@ -44,27 +46,21 @@ const start = container => {
         app.use(helmet());
         app.use(morgan(morganFormat, { stream: logger.stream}));
 
-        app.use('/admin', rootRoute(container));
+        app.use(cookieParser());
 
-        app.use((err, req, res, next) => {
-            reject(new Error('Something went wrong! :{}' + err));
-            res.status(500).send({
-                url: req.url,
-                message: err.message,
-                stack: err.stack
-            });
-        })
-
-        app.use((req, res, next) => {
-            logger.warn(`WARN url not found :[] ${req.url}`);
-            next();
-        });
+        app.use(requestMiddleware.wirePreRequest);
 
         app.get('/', (req, res) => {
             res.render('index', {
                 title: 'Admin page'
             });
         });
+
+        app.use('/admin', rootRoute(container));
+
+        app.use(requestMiddleware.wirePostRequest);
+
+        app.use(requestMiddleware.wireNotFoundMiddleware);
 
         if (process.env.NODE === 'test') {
             const server = app.listen(port, () => resolve(server))

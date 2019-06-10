@@ -33,9 +33,21 @@ module.exports = (db) => {
         });
     }
 
+    const getRolesByUserId = function (id) {
+        return new Promise((resolve, reject) => {
+            collection.findOne({ id }, { roles: 1 }, (err, account) => {
+                if (err)
+                    reject(new Error(`Error while geting account\'s roles id: ${id}`));
+                
+                resolve(account.roles);
+            });
+        })
+    };
+    
     return {
         getAllAccounts,
         getAccountById,
-        createAccount
+        createAccount,
+        getRolesByUserId
     }
 }
