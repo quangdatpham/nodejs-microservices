@@ -4,8 +4,8 @@ const { to } = require('await-to-js');
 module.exports = container => {
     const { Account } = container.resolve('repos');
     
-    const getAll = async (req, res, next) => {
-        const [ err, accounts ] = await to(Account.getAll());
+    const findAll = async (req, res, next) => {
+        const [ err, accounts ] = await to(Account.findAll());
         if (err) return next(err);
         
         res.status(status.OK)
@@ -15,7 +15,7 @@ module.exports = container => {
             });
     }
 
-    const getById = async (req, res, next) => {
+    const findById = async (req, res, next) => {
         const { id } = req.params;
         const [ err, account ] = await to(Account.getById(id));
         if (err) return next(err);
@@ -46,8 +46,8 @@ module.exports = container => {
     }
 
     return Object.create({
-        getAll,
-        getById,
+        findAll,
+        findById,
         newAccount,
         create
     });

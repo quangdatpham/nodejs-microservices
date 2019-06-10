@@ -1,5 +1,7 @@
 'use strict'
 
+const bcrypt = require('bcrypt');
+
 module.exports = (db) => {
     const collection = db.collection('accounts');
 
@@ -23,12 +25,22 @@ module.exports = (db) => {
         })
     }
 
-    const create = (account) => {
+    const create = ({ username, password }) => {
         return new Promise((resolve, reject) => {
-            collection.insertOne(account, (err, account) => {
+            bcrypt.hash(password, 10, function (err, hash) {
                 if (err)
-                    reject(new Error(`Error while creating account username: ${account.username}, password: ${account.password}`))
-                resolve(account);
+                    reject(new Error(`Bcrypt err while creating account username: ${username}`));
+                const newAcc = {};
+
+                newAcc.username = username;
+                newAcc.hashKey = hash;
+                newAcc.roles = [ 'user' ];
+
+                collection.insertOne(newAcc, (err) => {
+                    if (err)
+                        reject(new Error(`Error while creating account username: ${username}`));
+                    resolve();
+                });
             });
         });
     }

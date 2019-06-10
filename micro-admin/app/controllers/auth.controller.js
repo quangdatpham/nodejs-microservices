@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { to } = require('await-to-js');
+const jwt = require('jsonwebtoken');
 
 module.exports = container => {
     const { Account } = container.resolve('repos');
@@ -21,7 +22,7 @@ module.exports = container => {
             if (!result)
                 return res.render('templates/auth/login', { error: 'password incorrect' });
 
-            res.cookies('token', generateJWT(account));
+            res.cookie('token', generateJWT(account));
 
             res.redirect('/admin/');
         });
