@@ -20,15 +20,20 @@ mediator.on('di.ready', container => {
 
     Promise.all([
         repository.initialize(container),
-        helpers.initialize(container),
-        middlewares.initialize(container)
+        helpers.initialize(container)
     ])
-        .then(([ repos, helpers, middlewares ]) => {
+        .then(([ repos, helpers ]) => {
             container.register({
                 repos: asValue(repos),
-                helpers: asValue(helpers),
-                middlewares: asValue(middlewares)
+                helpers: asValue(helpers)
             });
+
+            return middlewares.initialize(container);
+        })
+        .then(middlewares => {
+            container.register({
+                middlewares: asValue(middlewares)
+            })
 
             return server.start(container);
         })

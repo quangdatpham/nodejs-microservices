@@ -8,7 +8,7 @@ module.exports = Object.create({
             }
 
             resolve({
-                Account: require('./account.repository')(connection)
+                Account: require('./account.repository')(container)
             });
         })
     },

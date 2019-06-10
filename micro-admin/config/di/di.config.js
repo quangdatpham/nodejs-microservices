@@ -1,4 +1,5 @@
 const { createContainer, asValue } = require('awilix');
+const { ObjectId } = require('mongodb');
 
 const initDI = ({ logger, serverSettings, database }) => mediator => {
     mediator.once('app.init', () => {
@@ -10,7 +11,7 @@ const initDI = ({ logger, serverSettings, database }) => mediator => {
                 logger: asValue(logger),
                 db: asValue(db),
                 serverSettings: asValue(serverSettings),
-                ObjectID: asValue(database.ObjectID)
+                ObjectId: asValue(ObjectId)
             });
 
             mediator.emit('di.ready', container);

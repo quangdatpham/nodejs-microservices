@@ -49,13 +49,7 @@ const start = container => {
         app.use(cookieParser());
 
         app.use(requestMiddleware.wirePreRequest);
-
-        app.get('/', (req, res) => {
-            res.render('index', {
-                title: 'Admin page'
-            });
-        });
-
+        
         app.use('/admin', rootRoute(container));
 
         app.use(requestMiddleware.wirePostRequest);

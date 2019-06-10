@@ -48,7 +48,8 @@ module.exports = container => {
                     
                     req.user = decodedPayload;
                     next();
-                });
+                })
+                .catch(next);
         });
     };
     
@@ -79,23 +80,23 @@ module.exports = container => {
     };
     
     const requireRole = roles => (req, res, next) => {
-        Account.findRolesByUserId(req.user.id, (err, user) => {
-            if (err) return next(err);
-    
-            if (roles.some(role => user.roles.includes(role)))
-                return next();
-            
-            res.status(status.FORBIDDEN).send({
-                success: false,
-                message: 'Do not have permission to access this resource',
-                errors: {
-                    authorization: {
-                        "name": "RequireRoleError",
-                        "message": "Do not have permission to access this resource"
+        Account.findRolesById(req.user._id)
+            .then((accountRoles) => {
+                if (roles.some(role => accountRoles.includes(role)))
+                    return next();
+                
+                res.status(status.FORBIDDEN).send({
+                    success: false,
+                    message: 'Do not have permission to access this resource',
+                    errors: {
+                        authorization: {
+                            "name": "RequireRoleError",
+                            "message": "Do not have permission to access this resource"
+                        }
                     }
-                }
-            });
-        });
+                });
+            })
+            .catch(next);
     };
     
     return {

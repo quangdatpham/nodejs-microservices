@@ -7,8 +7,17 @@ const accountRoute = require('./account.route');
 const authRoute = require('./auth.route');
 
 module.exports = container => {
+    const { authMiddleware: auth } = container.resolve('middlewares');
 
-	router.use('/accounts', accountRoute(container));
+    router.get('/', (req, res) => {
+        res.render('index', { title: 'Admin page' });
+    });
+
+    router.use('/accounts',
+        auth.requireAuth,
+        auth.requireRole([ 'admin' ]),
+        accountRoute(container)
+    );
 
     router.use('/auth', authRoute(container));
 

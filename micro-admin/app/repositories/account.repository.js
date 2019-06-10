@@ -2,8 +2,9 @@
 
 const bcrypt = require('bcrypt');
 
-module.exports = (db) => {
-    const collection = db.collection('accounts');
+module.exports = container => {
+    const ObjectId = container.resolve('ObjectId');
+    const collection = container.resolve('db').collection('accounts');
 
     const findAll = () => {
         return new Promise((resolve, reject) => {
@@ -16,7 +17,7 @@ module.exports = (db) => {
 
     const findById = id => {
         return new Promise((resolve, reject) => {
-            collection.findOne({ id }, (err, account) => {
+            collection.findOne({ _id: ObjectId(id) }, (err, account) => {
                 if (err)
                     reject(new Error(`Error while fetching account by id: ${id}, err: ${err}`));
 
@@ -45,9 +46,9 @@ module.exports = (db) => {
         });
     }
 
-    const findRolesByUserId = id => {
+    const findRolesById = id => {
         return new Promise((resolve, reject) => {
-            collection.findOne({ id }, { roles: 1 }, (err, account) => {
+            collection.findOne({ _id: ObjectId(id) }, (err, account) => {
                 if (err)
                     reject(new Error(`Error while geting account\'s roles id: ${id}`));
                 
@@ -71,7 +72,7 @@ module.exports = (db) => {
         findAll,
         findById,
         create,
-        findRolesByUserId,
+        findRolesById,
         findByUsername
     }
 }

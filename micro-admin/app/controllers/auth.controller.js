@@ -28,11 +28,9 @@ module.exports = container => {
         });
     }
 
-    const generateJWT = function () {
-        const { id, username } = this;
-    
-        const payloadToken = { id, username };
-    
+    const generateJWT = function ({ _id, username }) {
+        const payloadToken = { _id, username };
+
         return jwt.sign(payloadToken, process.env.JWT_SECRET, {
             expiresIn: parseInt(process.env.JWT_EXPIRES)
         });
