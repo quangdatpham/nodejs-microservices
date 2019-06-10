@@ -3,7 +3,7 @@
 module.exports = (db) => {
     const collection = db.collection('accounts');
 
-    const getAllAccounts = () => {
+    const findAll = () => {
         return new Promise((resolve, reject) => {
             const accounts = [];
             const cursor = collection.find({});
@@ -12,7 +12,7 @@ module.exports = (db) => {
         })
     }
 
-    const getAccountById = id => {
+    const findById = id => {
         return new Promise((resolve, reject) => {
             collection.findOne({ id }, (err, account) => {
                 if (err)
@@ -23,7 +23,7 @@ module.exports = (db) => {
         })
     }
 
-    const createAccount = (account) => {
+    const create = (account) => {
         return new Promise((resolve, reject) => {
             collection.insertOne(account, (err, account) => {
                 if (err)
@@ -33,7 +33,7 @@ module.exports = (db) => {
         });
     }
 
-    const getRolesByUserId = function (id) {
+    const findRolesByUserId = id => {
         return new Promise((resolve, reject) => {
             collection.findOne({ id }, { roles: 1 }, (err, account) => {
                 if (err)
@@ -43,11 +43,23 @@ module.exports = (db) => {
             });
         })
     };
+
+    const findByUsername = username => {
+        return new Promise((resolve, reject) => {
+            collection.findOne({ username }, (err, account) => {
+                if (err)
+                    reject(new Error(`Can not find account by username: ${username}`));
+
+                resolve(account);
+            });
+        })
+    }
     
     return {
-        getAllAccounts,
-        getAccountById,
-        createAccount,
-        getRolesByUserId
+        findAll,
+        findById,
+        create,
+        findRolesByUserId,
+        findByUsername
     }
 }

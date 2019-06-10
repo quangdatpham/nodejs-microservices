@@ -7,13 +7,13 @@ const router = express.Router();
 module.exports = container => {
     const controller = require('../controllers/account.controller')(container);
 
-    router.get('/', controller.getAllAccounts);
+    router.get('/', controller.getAll);
 
     router.get('/new', controller.newAccount);
 
-    router.post('/', controller.createAccount);
+    router.post('/', controller.create);
 
-    router.get('/:id', controller.getAccountById);
+    router.get('/:id', controller.getById);
 
     return router;
 }

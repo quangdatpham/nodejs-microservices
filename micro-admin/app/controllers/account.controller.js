@@ -4,8 +4,8 @@ const { to } = require('await-to-js');
 module.exports = container => {
     const { Account } = container.resolve('repos');
     
-    const getAllAccounts = async (req, res, next) => {
-        const [ err, accounts ] = await to(Account.getAllAccounts());
+    const getAll = async (req, res, next) => {
+        const [ err, accounts ] = await to(Account.getAll());
         if (err) return next(err);
         
         res.status(status.OK)
@@ -15,9 +15,9 @@ module.exports = container => {
             });
     }
 
-    const getAccountById = async (req, res, next) => {
+    const getById = async (req, res, next) => {
         const { id } = req.params;
-        const [ err, account ] = await to(Account.getAccountById(id));
+        const [ err, account ] = await to(Account.getById(id));
         if (err) return next(err);
         
         res.status(status.OK)
@@ -33,10 +33,10 @@ module.exports = container => {
         });
     }
 
-    const createAccount = async (req, res, next) => {
+    const create = async (req, res, next) => {
         const { username, password } = req.body;
 
-        const [ err ] = await to(Account.createAccount({
+        const [ err ] = await to(Account.create({
             username, password
         }));
 
@@ -46,9 +46,9 @@ module.exports = container => {
     }
 
     return Object.create({
-        getAllAccounts,
-        getAccountById,
+        getAll,
+        getById,
         newAccount,
-        createAccount
+        create
     });
 }

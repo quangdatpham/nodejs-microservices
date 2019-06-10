@@ -79,7 +79,7 @@ module.exports = container => {
     };
     
     const requireRole = roles => (req, res, next) => {
-        Account.getRolesByUserId(req.user.id, (err, user) => {
+        Account.findRolesByUserId(req.user.id, (err, user) => {
             if (err) return next(err);
     
             if (roles.some(role => user.roles.includes(role)))

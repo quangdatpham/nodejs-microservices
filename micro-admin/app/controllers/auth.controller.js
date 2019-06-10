@@ -13,7 +13,7 @@ module.exports = container => {
     
         const [ err, account ] = await to(Account.findByUsername(username));
         if (err) return next(err);
-    
+        
         if (!account)
             return res.render('templates/auth/login', { error: 'Account doesn\'t exist!'});
 
