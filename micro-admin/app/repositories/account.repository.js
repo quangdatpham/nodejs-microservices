@@ -10,8 +10,10 @@ module.exports = container => {
         return new Promise((resolve, reject) => {
             const accounts = [];
             const cursor = collection.find({});
-            cursor.forEach(account => accounts.push(account));
-            resolve(accounts.slice());
+            cursor.forEach(
+                account => accounts.push(account),
+                () => resolve(accounts.slice())
+            );
         })
     }
 
@@ -30,7 +32,7 @@ module.exports = container => {
         return new Promise((resolve, reject) => {
             bcrypt.hash(password, 10, function (err, hash) {
                 if (err)
-                    reject(new Error(`Bcrypt err while creating account username: ${username}`));
+                    reject(new Error(`Bcrypt err while creating account username: ${username}, err: ${err}`));
                 const newAcc = {};
 
                 newAcc.username = username;
@@ -39,7 +41,7 @@ module.exports = container => {
 
                 collection.insertOne(newAcc, (err) => {
                     if (err)
-                        reject(new Error(`Error while creating account username: ${username}`));
+                        reject(new Error(`Error while creating account username: ${username}, err: ${err}`));
                     resolve();
                 });
             });
@@ -50,7 +52,7 @@ module.exports = container => {
         return new Promise((resolve, reject) => {
             collection.findOne({ _id: ObjectId(id) }, (err, account) => {
                 if (err)
-                    reject(new Error(`Error while geting account\'s roles id: ${id}`));
+                    reject(new Error(`Error while geting account\'s roles id: ${id}, err: ${err}`));
                 
                 resolve(account.roles);
             });
@@ -61,7 +63,7 @@ module.exports = container => {
         return new Promise((resolve, reject) => {
             collection.findOne({ username }, (err, account) => {
                 if (err)
-                    reject(new Error(`Can not find account by username: ${username}`));
+                    reject(new Error(`Can not find account by username: ${username}, err: ${err}`));
 
                 resolve(account);
             });

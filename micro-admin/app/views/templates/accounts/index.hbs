@@ -1,1 +1,17 @@
 <h1>List Accounts</h1>
+<table style="text-align: center;">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each accounts}}
+            <tr>
+                <td>{{_id}}</td>
+                <td>{{username}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

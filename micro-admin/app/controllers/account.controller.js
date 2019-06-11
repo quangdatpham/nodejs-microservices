@@ -17,7 +17,7 @@ module.exports = container => {
 
     const findById = async (req, res, next) => {
         const { id } = req.params;
-        const [ err, account ] = await to(Account.getById(id));
+        const [ err, account ] = await to(Account.findById(id));
         if (err) return next(err);
         
         res.status(status.OK)

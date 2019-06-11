@@ -5,7 +5,7 @@ module.exports = container => {
     const { Account } = container.resolve('repos');
     const logger = container.resolve('logger');
 
-    logger.info('Wiring request middlewares');
+    logger.info('Wiring authentication middlewares');
 
     const requireAuthEmail = (req, res, next) => {
         const { token } = req.cookies;
