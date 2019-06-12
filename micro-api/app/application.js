@@ -8,7 +8,6 @@ const { asValue } = require('awilix');
 const server = require('./server/server');
 const { di } = require('../config/');
 const repository = require('./repositories/');
-const helpers = require('./helpers/');
 const middlewares = require('./middlewares/');
 
 const mediator = new EventEmitter();
@@ -19,13 +18,11 @@ mediator.on('di.ready', container => {
     logger.info('DI is ready!');
 
     Promise.all([
-        repository.initialize(container),
-        helpers.initialize(container)
+        repository.initialize(container)
     ])
-        .then(([ repos, helpers ]) => {
+        .then(([ repos ]) => {
             container.register({
-                repos: asValue(repos),
-                helpers: asValue(helpers)
+                repos: asValue(repos)
             });
 
             return middlewares.initialize(container);
