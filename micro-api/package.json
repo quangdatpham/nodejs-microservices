@@ -41,6 +41,7 @@
     "helmet": "^3.18.0",
     "http-status": "^1.3.2",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
     "mongodb": "^3.2.6",
     "morgan": "^1.9.1",
     "spdy": "^4.0.0",

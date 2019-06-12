@@ -10,7 +10,7 @@ module.exports = container => {
     const { authMiddleware: auth } = container.resolve('middlewares');
 
     router.get('/', (req, res) => {
-        res.render('index', { title: 'Admin page' });
+        res.render('index', { title: 'API' });
     });
 
     router.use('/accounts',

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { to } = require('await-to-js');
 const jwt = require('jsonwebtoken');
+const status = require('http-status');
 
 module.exports = container => {
     const { Account } = container.resolve('repos');
@@ -46,7 +47,17 @@ module.exports = container => {
 
     const signUp = async (req, res, next) => {
         const { username, password, email, firstname, lastname } = req.body;
-        const [ err, account ] = await to(Account.create({
+        let [ err, account ] = await to(Account.findByUsername(username));
+        if (err) next(err);
+
+        if (account)
+            return res.send({
+                success: false,
+                message: 'Username has already been taken!',
+                token: null
+            });
+
+        [ err, account ] = await to(Account.create({
             username, password, email, firstname , lastname
         }));
         if (err) return next(err);
@@ -60,7 +71,7 @@ module.exports = container => {
         res.status(200).send({
             success: true,
             message: "Registered",
-            token: account.generateJWT()
+            token: generateJWT(account)
         });
     }
 
@@ -182,6 +193,14 @@ module.exports = container => {
             });
         });
     }
+
+    const generateJWT = function ({ _id, username }) {
+        const payloadToken = { _id, username };
+
+        return jwt.sign(payloadToken, process.env.JWT_SECRET, {
+            expiresIn: parseInt(process.env.JWT_EXPIRES)
+        });
+    };
 
     return {
         signIn,

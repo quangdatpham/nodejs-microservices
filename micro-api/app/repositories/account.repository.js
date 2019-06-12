@@ -1,6 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 module.exports = container => {
     const ObjectId = container.resolve('ObjectId');
@@ -28,15 +29,14 @@ module.exports = container => {
                 newAcc.hashKey = hash;
                 newAcc.roles = [ 'user' ];
 
-                account.hashKey = hash;
-                account.emailVerifyKey = randomKey(6);
-
-                setExpirationEmailKey(account);
+                newAcc.hashKey = hash;
+                newAcc.emailVerifyKey = randomKey(6);
+                newAcc.expirationEmailKey = generateExpirationDate();
 
                 collection.insertOne(newAcc, (err) => {
                     if (err)
                         reject(new Error(`Error while creating account username: ${username}, err: ${err}`));
-                    resolve();
+                    resolve(newAcc);
                 });
             });
         });
@@ -45,12 +45,13 @@ module.exports = container => {
     const newEmailVerifyKey = ({id, username}) => {
         return new Promise((resolve, reject) => {
             const emailVerifyKey = randomKey(6);
+            const expirationEmailKey = generateExpirationDate();
             const queryOptions = {};
 
             if (id) queryOptions._id =  ObjectId(id);
             if (id) queryOptions.username =  username;
 
-            collection.updataOne(queryOptions, { emailVerifyKey }, (err, account) => {
+            collection.updataOne(queryOptions, { emailVerifyKey, expirationEmailKey }, (err, account) => {
                 if (err)
                     reject(new Error(`Error while set new email verify key ---- ${id || username}, err: ${err}`));
                 
@@ -157,12 +158,12 @@ module.exports = container => {
     }
 
     /**private */
-    const setExpirationEmailKey = account => {
+    const generateExpirationDate = () => {
         const date = (new Date).toJSON();
-        account.expirationEmailKey = moment(date).add(
+        return moment(date).add(
             process.env.EMAILKEY_DURATION,
             'seconds'
-        );
+        ).toJSON();
     }
 
     const randomKey = length =>Array.from({ length })
