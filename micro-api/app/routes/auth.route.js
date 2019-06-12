@@ -11,17 +11,19 @@ module.exports = container => {
 
     router.get('/verify/email',
         auth.requireAuth,
+        controller.checkingVerifyEmail,
         controller.getVerifyEmail
     );
 
     router.patch('/verify/email',
         auth.requireAuth,
+        controller.checkingVerifyEmail,
         controller.patchVerifyEmail
     );
 
     router.get('/resetpwd/:username', controller.getResetPassword);
 
-    router.patch('/verify/password', controller.patchVerifyPassword);
+    router.patch('/verifypwd/:username', controller.patchVerifyPassword);
 
     router.patch('/resetpwd/:username', controller.patchResetPassword);
 

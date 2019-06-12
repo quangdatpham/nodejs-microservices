@@ -42,16 +42,16 @@ module.exports = container => {
         });
     }
 
-    const newEmailVerifyKey = ({id, username}) => {
+    const newEmailVerifyKey = ({ id, username }) => {
         return new Promise((resolve, reject) => {
             const emailVerifyKey = randomKey(6);
             const expirationEmailKey = generateExpirationDate();
             const queryOptions = {};
 
             if (id) queryOptions._id =  ObjectId(id);
-            if (id) queryOptions.username =  username;
+            if (username) queryOptions.username =  username;
 
-            collection.updataOne(queryOptions, { emailVerifyKey, expirationEmailKey }, (err, account) => {
+            collection.updateOne(queryOptions, { $set: { emailVerifyKey, expirationEmailKey } }, (err, account) => {
                 if (err)
                     reject(new Error(`Error while set new email verify key ---- ${id || username}, err: ${err}`));
                 
@@ -75,10 +75,10 @@ module.exports = container => {
         return new Promise((resolve, reject) => {
             collection.findOne( { _id: ObjectId(id) }, (err, account) => {
                 if (err) 
-                    reject(new Error(`Error while verifying account.id: ${id}, err: ${err}`));
+                    return reject(new Error(`Error while verifying account.id: ${id}, err: ${err}`));
     
                 if (account.emailVerifyKey != key)
-                    resolve({
+                    return resolve({
                         success: false,
                         message: "Key invalid"
                     });
@@ -87,13 +87,15 @@ module.exports = container => {
                     moment(account.expirationEmailKey)
                         .isBefore( (new Date()).toJSON() )
                 ) {
-                    resolve({
+                    return resolve({
                         success: false,
                         message: 'Key expired'
                     });
                 }
                 
                 account.isVerified = true;
+
+                collection.updateOne({ _id: ObjectId(id) }, { $set: account });
             
                 resolve({
                     success: true,
@@ -103,9 +105,9 @@ module.exports = container => {
         })
     }
 
-    const verifyPassword = ({id, key}) => {
+    const verifyPassword = ({ username, key }) => {
         return new Promise((resolve, reject) => {
-            collection.findOne( { _id: ObjectId(id) }, (err, account) => {
+            collection.findOne( { username }, (err, account) => {
                 if (err) 
                     reject(new Error(`Error while verifying password account.username: ${username}, err: ${err}`));
     
@@ -125,7 +127,7 @@ module.exports = container => {
                     });
                 }
                 
-                account.resetPassword = true;
+                collection.updateOne({ username }, { $set: { resetPassword: true }});
             
                 resolve({
                     success: true,
@@ -133,6 +135,27 @@ module.exports = container => {
                 });
             })
         })
+    }
+
+    const updatePasswordById = ({ id, password }) => {
+        return new Promise((resolve, reject) => {
+            bcrypt.hash(password, 10, function (err, hash) {
+                if (err)
+                    return reject(new Error(`Error while encrypting update password, account.id: ${id}, err: ${err}`));
+    
+                const updateFields = {
+                    hashKey: hash,
+                    resetPassword: false
+                }
+    
+                collection.updateOne({ _id: ObjectId(id) }, { $set:  updateFields }, (err, result) => {
+                    if (err)
+                        return reject(new Error(`Error while updating password, account.id: ${id}, err: ${err}`));
+                    
+                    resolve(result);
+                });
+            });
+        });
     }
 
     const findRolesById = id => {
@@ -178,6 +201,7 @@ module.exports = container => {
         newEmailVerifyKey,
         isVerified,
         verifyEmail,
-        verifyPassword
+        verifyPassword,
+        updatePasswordById
     }
 }

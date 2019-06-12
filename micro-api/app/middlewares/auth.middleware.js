@@ -8,7 +8,7 @@ module.exports = container => {
     logger.info('Wiring authentication middlewares');
 
     const requireAuthEmail = (req, res, next) => {
-        const { token } = req.cookies;
+        const token = req.headers['authorization'];
         
         if (!token) {
             return res.status(status.UNAUTHORIZED).send({
@@ -54,7 +54,7 @@ module.exports = container => {
     };
     
     const requireAuth = (req, res, next) => {
-        const { token } = req.cookies;
+        const token = req.headers['authorization'];
         
         if (!token) {
             return res.status(status.UNAUTHORIZED).send({

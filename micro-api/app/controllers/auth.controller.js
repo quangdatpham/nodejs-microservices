@@ -76,14 +76,7 @@ module.exports = container => {
     }
 
     const getVerifyEmail = async (req, res, next) => {
-        if (Account.isVerified(req.user.id)) {
-            return res.status(200).send({
-                success: false,
-                message: 'This account was verified.'
-            });
-        }
-
-        const [ err, emailVerifyKey ] = await to(Account.newEmailVerifyKey({ id: req.user.id }));
+        const [ err, account ] = await to(Account.newEmailVerifyKey({ id: req.user._id }));
         if (err) return next(err);
 
         // sendEmail({
@@ -99,9 +92,9 @@ module.exports = container => {
     }
 
     const patchVerifyEmail = async (req, res, next) => {
-        const { type, key } = req.body;
+        const { key } = req.body;
 
-        const [ err, result ] = await to(Account.verifyEmail(req.user.id, key, type));
+        const [ err, result ] = await to(Account.verifyEmail({ id: req.user._id, key }));
         if (err) return next(err);
 
         // sendEmail({
@@ -132,9 +125,10 @@ module.exports = container => {
     }
 
     const patchVerifyPassword = async (req, res, next) => {
-        const { username, key } = req.body;
+        const { username } = req.params;
+        const { key } = req.body;
 
-        const [ err, result ] = await to(Account.verifyPassword(username, key));
+        const [ err, result ] = await to(Account.verifyPassword({ username, key }));
         if (err) return next(err);
 
         // sendEmail({
@@ -171,30 +165,34 @@ module.exports = container => {
                 message: "Password not match"
             });
         
-        bcrypt.hash(password, 10, function (err, hash) {
-            if (err) return next(err);
+        // sendEmail({
+        //     to: account.email,
+        //     subject: 'ResetPassword Done',
+        //     content: 'Your password has resetted.'
+        // });
+        
+        Account.updatePasswordById({ id: account._id.toString(), password });
 
-            account.hashKey = hash;
-            account.resetPassword = false;
-
-            sendEmail({
-                to: account.email,
-                subject: 'ResetPassword Done',
-                content: 'Your password has resetted.'
-            });
-
-            account.save(function (err) {
-                if (err) return next(err);
-
-                res.status(200).send({
-                    success: true,
-                    message: "Reset password"
-                });
-            });
+        res.status(200).send({
+            success: true,
+            message: "Reset password"
         });
     }
 
-    const generateJWT = function ({ _id, username }) {
+    const checkingVerifyEmail = async (req, res, next) => {
+        const [ err, isVerified ] = await to(Account.isVerified(req.user._id));
+        if (err) return next(err);
+
+        if (isVerified) {
+            return res.status(200).send({
+                success: false,
+                message: 'This account was verified.'
+            });
+        }
+    }
+
+    /**private */
+    const generateJWT = ({ _id, username }) => {
         const payloadToken = { _id, username };
 
         return jwt.sign(payloadToken, process.env.JWT_SECRET, {
@@ -209,6 +207,7 @@ module.exports = container => {
         patchVerifyEmail,
         getResetPassword,
         patchVerifyPassword,
-        patchResetPassword
+        patchResetPassword,
+        checkingVerifyEmail
     }
 }
